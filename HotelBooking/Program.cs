@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace HotelBooking {
     class Program {
-        static void Main(string[] args) {
-            //kjsfdansva;lk
+        
+        /* List of Travel Agencies and Hotel Suppliers*/
+        /* Buffer, etc */
 
+        static void Main(string[] args) {
+
+
+            /* Create threads and run */
+
+            /* Join them */
+
+            /* Finish */
         }
     }
 }
