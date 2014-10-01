@@ -7,19 +7,29 @@ using System.Threading.Tasks;
 namespace HotelBooking {
     class HotelSupplier {
 
-        public delegate void PriceUpdate(int newPrice);
+        public delegate void PriceUpdate(double newPrice);
         public static event PriceUpdate priceCut;
 
-        float roomPrice;
-        /* some structure to save the occupied rooms */
+        double roomPrice;
+        int numOfRooms;
+        int numOfOccupiedRooms;
+        int numOfIterations;
 
+        public HotelSupplier(int numOfRooms, int numOfIterations) {
+            this.numOfRooms = numOfRooms;
+            this.numOfOccupiedRooms = 0;
+            this.numOfIterations = numOfIterations;
+            this.roomPrice = 30.0;
+        }
 
         /**
          * PricingModel, generates a new price for the room
          * based on some pricing model (random is fine)
          */ 
-        public float getNewPrice() {
-            return 0.0f;
+        public double getNewPrice() {
+            Random rnd = new Random();
+            double newPrice = (rnd.NextDouble()*20.0) + 10.0;
+            return newPrice;
         }
 
         /**
@@ -28,8 +38,16 @@ namespace HotelBooking {
          * to Order) and decide what to do with it 
          * (check if the order is for you, and if it is
          * process it).
+         */ 
         public void newOrder(String encodedOrder) {
+            Order order = OrderSerializer.decode(encodedOrder);
+            
+            /* we need to define order before implementing this */
 
+            /* Check if order is for you */
+            /* Check availability */
+            /* Confirm order with bank service */
+            /* Send confirmation back to the travel agency */
         }
 
         /**
@@ -37,6 +55,13 @@ namespace HotelBooking {
          * Performs price updates and triggers events.
          */
         public void run() {
+            for (int i = 0; i < numOfIterations; i++) {
+                double newPrice = getNewPrice();
+                if (newPrice < roomPrice) {
+                    priceCut(newPrice);
+                }
+                roomPrice = newPrice;
+            }
 
         }
 
