@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace HotelBooking {
     class HotelSupplier {
@@ -10,12 +11,16 @@ namespace HotelBooking {
         public delegate void PriceUpdate(double newPrice);
         public static event PriceUpdate priceCut;
 
+        static int idCounter = 0;
+
+        int id;
         double roomPrice;
         int numOfRooms;
         int numOfOccupiedRooms;
         int numOfIterations;
 
         public HotelSupplier(int numOfRooms, int numOfIterations) {
+            this.id = idCounter++;
             this.numOfRooms = numOfRooms;
             this.numOfOccupiedRooms = 0;
             this.numOfIterations = numOfIterations;
@@ -41,13 +46,11 @@ namespace HotelBooking {
          */ 
         public void newOrder(String encodedOrder) {
             Order order = OrderSerializer.decode(encodedOrder);
-            
-            /* we need to define order before implementing this */
 
-            /* Check if order is for you */
-            /* Check availability */
-            /* Confirm order with bank service */
-            /* Send confirmation back to the travel agency */
+            if (order.getReceiverID() == id) {
+                Thread orderProcesser = new Thread(()=>this.processOrder(order));
+                orderProcesser.Start();
+            }
         }
 
         /**
@@ -63,6 +66,10 @@ namespace HotelBooking {
                 roomPrice = newPrice;
             }
 
+        }
+
+        public void processOrder(Order order) {
+            // Process order and send confirmation
         }
 
     }
