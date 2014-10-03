@@ -11,8 +11,6 @@ namespace HotelBooking {
         private static int idCounter = 0;
         private static Random rnd = new Random();
 
-        private Mutex lowestPriceHotelSupplierMutex = new Mutex();
-
         private int id;
         private double lowestPrice;
         private int idOfHotelSupplierWithLowestPrice;
