@@ -23,6 +23,7 @@ namespace HotelBooking {
         {
 
             String[] orderSplitted = order.Split(' ');
+            //not sure if that last orderSplitted should be 3 or 4
             Order theOrder = new Order(Int32.Parse(orderSplitted[0]), Int32.Parse(orderSplitted[1]), Int32.Parse(orderSplitted[2]), Int32.Parse(orderSplitted[3]), Int32.Parse(orderSplitted[3]));
             return theOrder;
         }
