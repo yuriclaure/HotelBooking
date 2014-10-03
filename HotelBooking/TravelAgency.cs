@@ -24,6 +24,8 @@ namespace HotelBooking {
             lowestPrice = 40.0;
             this.buffer = buffer;
             unconfirmedOrders = new LinkedList<int>();
+
+            // TODO: get credit card number from bank service.
         }
 
 
