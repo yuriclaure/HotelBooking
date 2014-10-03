@@ -9,7 +9,7 @@ namespace HotelBooking {
     class HotelSupplier {
 
         public delegate void PriceUpdate(int hotelSupplierID, double newPrice);
-        public event PriceUpdate priceCut;
+        public static event PriceUpdate priceCut;
 
         private static int idCounter = 0;
         private static Random rnd = new Random();
@@ -46,7 +46,6 @@ namespace HotelBooking {
             Order order = OrderSerializer.decode(encodedOrder);
 
             if (order.getReceiverID() == id) {
-                Console.WriteLine("[HotelSupplier (" + id + ")] Order #" + order.getOrderID() + " received.");
                 Thread orderProcesser = new Thread(()=>this.processOrder(order));
                 orderProcesser.Start();
             }
@@ -72,7 +71,6 @@ namespace HotelBooking {
         public void processOrder(Order order) {
             // TODO: Check card number with Bank Service.
             double totalPrice = order.getAmount() * roomPrice;
-            Console.WriteLine("[HotelSupplier (" + id + ")] Order #" + order.getOrderID() + " confirmation sent.");
             confirmationBuffer.put(OrderSerializer.encode(order));
         }
 

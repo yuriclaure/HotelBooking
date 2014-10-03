@@ -54,9 +54,5 @@ namespace HotelBooking {
             return amount;
         }
 
-        public String ToString() {
-            return "{OrderID: " + id + " - SenderID: " + senderID + " - ReceiverID: " + receiverID + " - CardNumber: " + cardNumber + " - Amount: " + amount + "}";
-        }
-
     }
 }

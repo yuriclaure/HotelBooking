@@ -20,7 +20,7 @@ namespace HotelBooking {
     class MultiCellBuffer {
 
         public delegate void NewDataEvent(String data);
-        public event NewDataEvent newData;
+        public static event NewDataEvent newData;
 
         String[] data;
         int size, occupiedPositions;
