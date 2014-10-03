@@ -15,15 +15,15 @@ namespace HotelBooking {
 
         public static String encode(Order order) 
         {
-            return order.ToString();
-            //return order.getSenderID() + " " + order.getReceiverID() + " " + order.getCardNumber() + " " + order.getAmount();
+           
+           return order.getSenderID() + " " + order.getReceiverID() + " " + order.getCardNumber() + " " + order.getAmount();
         }
 
         public static Order decode(String order) 
         {
-            return Convert.ChangeType(order, typeof(Order));
-            //Order theOrder = new Order(1,2,3,4);
-            //return theOrder;
+            
+            Order theOrder = new Order(1,2,3,4);
+            return theOrder;
         }
     }
 }
