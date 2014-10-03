@@ -16,13 +16,14 @@ namespace HotelBooking {
         public static String encode(Order order) 
         {
            
-           return order.getSenderID() + " " + order.getReceiverID() + " " + order.getCardNumber() + " " + order.getAmount();
+           return order.getOrderID() + " " + order.getSenderID() + " " + order.getReceiverID() + " " + order.getCardNumber() + " " + order.getAmount();
         }
 
         public static Order decode(String order) 
         {
-            
-            Order theOrder = new Order(1,2,3,4);
+
+            String[] orderSplitted = order.Split(' ');
+            Order theOrder = new Order(Int32.Parse(orderSplitted[0]), Int32.Parse(orderSplitted[1]), Int32.Parse(orderSplitted[2]), Int32.Parse(orderSplitted[3]), Int32.Parse(orderSplitted[3]));
             return theOrder;
         }
     }

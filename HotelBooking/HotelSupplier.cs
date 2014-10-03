@@ -8,23 +8,22 @@ using System.Threading;
 namespace HotelBooking {
     class HotelSupplier {
 
-        public delegate void PriceUpdate(double newPrice);
+        public delegate void PriceUpdate(int hotelSupplierID, double newPrice);
         public static event PriceUpdate priceCut;
 
-        static int idCounter = 0;
+        private static int idCounter = 0;
+        private static Random rnd = new Random();
 
-        int id;
-        double roomPrice;
-        int numOfRooms;
-        int numOfOccupiedRooms;
-        int numOfIterations;
+        private int id;
+        private double roomPrice;
+        private int numOfIterations;
+        private MultiCellBuffer confirmationBuffer;
 
-        public HotelSupplier(int numOfRooms, int numOfIterations) {
+        public HotelSupplier(int numOfIterations, MultiCellBuffer confirmationBuffer) {
             this.id = idCounter++;
-            this.numOfRooms = numOfRooms;
-            this.numOfOccupiedRooms = 0;
             this.numOfIterations = numOfIterations;
             this.roomPrice = 30.0;
+            this.confirmationBuffer = confirmationBuffer;
         }
 
         /**
@@ -32,7 +31,6 @@ namespace HotelBooking {
          * based on some pricing model (random is fine)
          */ 
         public double getNewPrice() {
-            Random rnd = new Random();
             double newPrice = (rnd.NextDouble()*20.0) + 10.0;
             return newPrice;
         }
@@ -61,7 +59,9 @@ namespace HotelBooking {
             for (int i = 0; i < numOfIterations; i++) {
                 double newPrice = getNewPrice();
                 if (newPrice < roomPrice) {
-                    priceCut(newPrice);
+                    if (priceCut != null) {
+                        priceCut(id, newPrice);
+                    }
                 }
                 roomPrice = newPrice;
             }
@@ -69,7 +69,13 @@ namespace HotelBooking {
         }
 
         public void processOrder(Order order) {
-            // Process order and send confirmation
+            // TODO: Check card number with Bank Service.
+            double totalPrice = order.getAmount() * roomPrice;
+            confirmationBuffer.put(OrderSerializer.encode(order));
+        }
+
+        public void subscribeToPriceCut(PriceUpdate subscriber) {
+            priceCut += subscriber;
         }
 
     }

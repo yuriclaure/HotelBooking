@@ -19,25 +19,29 @@ using System.Threading;
 namespace HotelBooking {
     class MultiCellBuffer {
 
-        public delegate void newOrderEvent(String order);
-        public static event newOrderEvent newOrder;
+        public delegate void NewDataEvent(String data);
+        public static event NewDataEvent newData;
 
-        const int SIZE = 3;
-        String[] orders = new String[SIZE];
-        int head = 0, tail = 0, n = 0;
+        String[] data;
+        int size, occupiedPositions;
+        int head, tail;
 
-        public void put(string order) {
+        public MultiCellBuffer(int size) {
+            data = new String[size];
+            this.size = size;
+            head = tail = occupiedPositions = 0;
+        }
+
+        public void put(string newData) {
             lock (this) {
-                while (n == SIZE) {
+                while (occupiedPositions == size) {
                     Monitor.Wait(this);
                 }
 
-                Console.WriteLine("writing thread entered");
-                orders[tail] = order;
-                tail = (tail + 1) % SIZE;
-                n++;
+                data[tail] = newData;
+                tail = (tail + 1) % size;
+                occupiedPositions++;
 
-                Console.WriteLine("writing thread " + Thread.CurrentThread.Name + " " + c + " " + n);
                 Monitor.Pulse(this);
             }
         }
@@ -45,16 +49,16 @@ namespace HotelBooking {
         public void run() {
             while (true) {
                 lock (this) {
-                    while (n == 0) {
+                    while (occupiedPositions == 0) {
                         Monitor.Wait(this);
                     }
 
-                    String order = orders[head];
-                    head = (head + 1) % SIZE;
-                    n--;
+                    String order = data[head];
+                    head = (head + 1) % size;
+                    occupiedPositions--;
 
-                    if (newOrder != null) {
-                        newOrder(order);
+                    if (newData != null) {
+                        newData(order);
                     }
 
                     Monitor.Pulse(this);
@@ -62,8 +66,8 @@ namespace HotelBooking {
             }
         }
 
-        public void subscribeGet(newOrderEvent subscriber) {
-            newOrder += subscriber;
+        public void subscribeToGet(NewDataEvent subscriber) {
+            newData += subscriber;
         }
     }
 }
