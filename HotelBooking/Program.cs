@@ -14,10 +14,11 @@ namespace HotelBooking {
         private static LinkedList<TravelAgency> travelAgencies = new LinkedList<TravelAgency>();
         private static LinkedList<HotelSupplier> hotelSuppliers = new LinkedList<HotelSupplier>();
 
-        private static LinkedList<Thread> threads = new LinkedList<Thread>();
+        private static LinkedList<Thread> travelAgenciesThreads = new LinkedList<Thread>();
+        private static LinkedList<Thread> hotelSuppliersThreads = new LinkedList<Thread>();
 
-        private const int NUM_OF_TRAVEL_AGENCIES = 1;
-        private const int NUM_OF_HOTEL_SUPPLIERS = 1;
+        private const int NUM_OF_TRAVEL_AGENCIES = 5;
+        private const int NUM_OF_HOTEL_SUPPLIERS = 3;
         
         static void Main(string[] args) {
 
@@ -25,20 +26,20 @@ namespace HotelBooking {
             Thread confirmationBufferThread = new Thread(confirmationBuffer.run);
 
             for (int i = 0; i < NUM_OF_HOTEL_SUPPLIERS; i++) {
-                HotelSupplier hotelSupplier = new HotelSupplier(1, confirmationBuffer);
+                HotelSupplier hotelSupplier = new HotelSupplier(10, confirmationBuffer);
                 hotelSuppliers.AddLast(hotelSupplier);
                 Thread hotelSupplierThread = new Thread(hotelSupplier.run);
                 hotelSupplierThread.Name = "HotelSupplier [" + i + "]";
-                threads.AddLast(new Thread(hotelSupplier.run));
+                hotelSuppliersThreads.AddLast(new Thread(hotelSupplier.run));
                 orderBuffer.subscribeToGet(new MultiCellBuffer.NewDataEvent(hotelSupplier.newOrder));
             }
 
             for (int i = 0; i < NUM_OF_TRAVEL_AGENCIES; i++) {
-                TravelAgency travelAgency = new TravelAgency(1, orderBuffer);
+                TravelAgency travelAgency = new TravelAgency(orderBuffer);
                 travelAgencies.AddLast(travelAgency);
                 Thread travelAgencyThread = new Thread(travelAgency.run);
                 travelAgencyThread.Name = "TravelAgency [" + i + "]";
-                threads.AddLast(travelAgencyThread);
+                travelAgenciesThreads.AddLast(travelAgencyThread);
                 for (LinkedListNode<HotelSupplier> it = hotelSuppliers.First; it != null; it = it.Next) {
                     it.Value.subscribeToPriceCut(new HotelSupplier.PriceUpdate(travelAgency.priceUpdateCallback));
                 }
@@ -48,12 +49,20 @@ namespace HotelBooking {
             orderBufferThread.Start();
             confirmationBufferThread.Start();
 
-            for (LinkedListNode<Thread> it = threads.First; it != null; it = it.Next) {
+            for (LinkedListNode<Thread> it = hotelSuppliersThreads.First; it != null; it = it.Next) {
                 it.Value.Start();
             }
 
-            for (LinkedListNode<Thread> it = threads.First; it != null; it = it.Next) {
+            for (LinkedListNode<Thread> it = travelAgenciesThreads.First; it != null; it = it.Next) {
+                it.Value.Start();
+            }
+
+            for (LinkedListNode<Thread> it = hotelSuppliersThreads.First; it != null; it = it.Next) {
                 it.Value.Join();
+            }
+
+            for (LinkedListNode<Thread> it = travelAgenciesThreads.First; it != null; it = it.Next) {
+                it.Value.Abort();
             }
 
             orderBufferThread.Abort();
