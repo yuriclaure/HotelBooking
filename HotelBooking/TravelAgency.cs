@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 namespace HotelBooking {
     class TravelAgency {
 
+        static int idCounter = 0;
+
+        int id;
+
+        public TravelAgency() {
+            id = idCounter++;
+        }
 
 
         /* method called by the priceCut event from Hotel Supplier */
