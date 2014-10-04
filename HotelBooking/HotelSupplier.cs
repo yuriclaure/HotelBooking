@@ -18,6 +18,7 @@ namespace HotelBooking {
         private double roomPrice;
         private int numOfIterations;
         private MultiCellBuffer confirmationBuffer;
+        private BankService bank;
 
         public HotelSupplier(int numOfIterations, MultiCellBuffer confirmationBuffer) {
             this.id = idCounter++;
