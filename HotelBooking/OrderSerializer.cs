@@ -23,7 +23,7 @@ namespace HotelBooking {
         {
 
             String[] orderSplitted = order.Split(' ');
-            Order theOrder = new Order(Int32.Parse(orderSplitted[0]), Int32.Parse(orderSplitted[1]), Int32.Parse(orderSplitted[2]), Int32.Parse(orderSplitted[3]), Int32.Parse(orderSplitted[4]));
+            Order theOrder = new Order(Int32.Parse(orderSplitted[0]), Int32.Parse(orderSplitted[1]), Int32.Parse(orderSplitted[2]), orderSplitted[3], Int32.Parse(orderSplitted[4]));
             return theOrder;
         }
     }

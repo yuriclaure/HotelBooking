@@ -18,7 +18,6 @@ namespace HotelBooking {
         private double roomPrice;
         private int numOfIterations;
         private MultiCellBuffer confirmationBuffer;
-        private BankService bank;
 
         public HotelSupplier(int numOfIterations, MultiCellBuffer confirmationBuffer) {
             this.id = idCounter++;
@@ -71,10 +70,14 @@ namespace HotelBooking {
         }
 
         public void processOrder(Order order) {
-            // TODO: Check card number with Bank Service.
-            double totalPrice = order.getAmount() * roomPrice;
-            Console.WriteLine("[HotelSupplier (" + id + ")] Order #" + order.getOrderID() + " confirmation sent.");
-            confirmationBuffer.put(OrderSerializer.encode(order));
+            EncryptionService.ServiceClient encryptionService = new EncryptionService.ServiceClient();
+            if (BankService.isCardValid(encryptionService.Encrypt(order.getCardNumber()))) {
+                double totalPrice = order.getAmount() * roomPrice;
+                Console.WriteLine("[HotelSupplier (" + id + ")] Order #" + order.getOrderID() + " confirmation sent.");
+                confirmationBuffer.put(OrderSerializer.encode(order));
+            } else {
+                Console.WriteLine("[HotelSupplier (" + id + ")] Order #" + order.getOrderID() + " had the card number refused.");
+            }
         }
 
         public void subscribeToPriceCut(PriceUpdate subscriber) {

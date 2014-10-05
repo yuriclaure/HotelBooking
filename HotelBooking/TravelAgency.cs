@@ -16,14 +16,15 @@ namespace HotelBooking {
         private int idOfHotelSupplierWithLowestPrice;
         private MultiCellBuffer buffer;
         private LinkedList<int> unconfirmedOrders;
+        private String creditCard;
 
         public TravelAgency(MultiCellBuffer buffer) {
             id = idCounter++;
             lowestPrice = 40.0;
             this.buffer = buffer;
             unconfirmedOrders = new LinkedList<int>();
-
-            // TODO: get credit card number from bank service.
+            EncryptionService.ServiceClient encryptionService = new EncryptionService.ServiceClient();
+            creditCard = encryptionService.Decrypt(BankService.generateNewCreditCard());
         }
 
 
@@ -57,7 +58,7 @@ namespace HotelBooking {
         public void run() {
             while (true) {
                 Monitor.Enter(this);
-                Order newOrder = new Order(id, idOfHotelSupplierWithLowestPrice, 20, getNumOfRooms());
+                Order newOrder = new Order(id, idOfHotelSupplierWithLowestPrice, creditCard, getNumOfRooms());
                 Console.WriteLine("[TravelAgency (" + id + ")] New order: " + newOrder.ToString());
 
                 unconfirmedOrders.AddLast(newOrder.getOrderID());

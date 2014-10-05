@@ -15,10 +15,10 @@ namespace HotelBooking {
         private int id;
         private int senderID;
         private int receiverID;
-        private int cardNumber;
+        private String cardNumber;
         private int amount;
 
-        public Order(int senderID, int receiverID, int cardNumber, int amount) {
+        public Order(int senderID, int receiverID, String cardNumber, int amount) {
             id = idCounter++;
             this.senderID = senderID;
             this.receiverID = receiverID;
@@ -26,7 +26,7 @@ namespace HotelBooking {
             this.amount = amount;
         }
 
-        public Order(int orderID, int senderID, int receiverID, int cardNumber, int amount) {
+        public Order(int orderID, int senderID, int receiverID, String cardNumber, int amount) {
             id = orderID;
             this.senderID = senderID;
             this.receiverID = receiverID;
@@ -46,7 +46,7 @@ namespace HotelBooking {
             return receiverID;
         }
 
-        public int getCardNumber() {
+        public String getCardNumber() {
             return cardNumber;
         }
 
